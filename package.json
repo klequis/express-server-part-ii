@@ -1,0 +1,37 @@
+{
+  "name": "minimum-configuration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx babel-node server/index.js",
+    "delete-dist": "rm -rf dist",
+    "transcompile": "babel . -d dist --ignore node_modules --source-maps",
+    "copy": "cp package.json dist/package.json",
+    "install-prod": "cd dist && npm i --production",
+    "build": "npm run-script delete-dist && npm run-script transcompile && npm run-script copy && npm run-script install-prod"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.4.4",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.2",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/types": "^7.4.4",
+    "@types/body-parser": "^1.17.0",
+    "@types/cors": "^2.8.5",
+    "@types/express": "^4.16.1",
+    "@types/node": "^12.0.0",
+    "fs-extra": "^7.0.1",
+    "rimraf": "^2.6.3"
+  }
+}
