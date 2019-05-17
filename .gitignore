@@ -31,3 +31,6 @@ lib-cov
 .node_repl_history
 
 .nyc_output
+
+
+config/env.js
