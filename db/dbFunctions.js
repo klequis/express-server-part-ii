@@ -4,9 +4,6 @@ import { getObjectId, removeIdProp } from './helpers'
 
 const MongoClient = mongodb.MongoClient
 
-
-console.log('config', config)
-
 let client
 
 export const connectDB = async () => {

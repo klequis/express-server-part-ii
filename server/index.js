@@ -18,5 +18,5 @@ app.get("/api", (req, res) => {
 })
 
 app.listen(config.port, () => {
-  console.log(`Events API is listening on port ${port}`)
+  console.log(`Events API is listening on port ${config.port}`)
 })
