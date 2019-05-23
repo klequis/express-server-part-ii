@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --require @babel/register",
+    "test": "NODE_ENV=test NODE_PATH=./ mocha --require @babel/register",
     "test-watch": "export WATCH='watch' && nodemon --exec 'npm test'",
-    "start": "npx babel-node server/index.js",
+    "start": "NODE_PATH=./ npx babel-node server/index.js",
     "delete-dist": "rm -rf dist",
     "transcompile": "babel . -d dist --ignore node_modules --source-maps",
     "copy": "cp package.json dist/package.json",
