@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import request from 'supertest'
-import { ObjectIdToHexString } from 'db'
+import { objectIdToHexString } from 'db'
 import { fourTodos, oneTodo } from "./fixture"
 import app from 'server'
 import { ObjectId } from 'mongodb'
@@ -81,35 +81,22 @@ describe('todo-route', function() {
   })
 
   describe('test DELETE /api/todo/:id', function() {
+    let _idToDelete = ''
     before(async function() {
       await dropCollection(collectionName)
       await insertMany(collectionName, fourTodos)
-    })
-    let _idToDelete = ''
-    it('check there are 4 records', async function() {
       const findRes = await find(collectionName, {})
       expect(findRes.data.length).to.equal(4)
       _idToDelete = findRes.data[1]._id
-      const oid = new ObjectId(_idToDelete).toHexString()
-      console.log('_idToDelete', _idToDelete)
-      console.log('oid', oid)
-      console.log('_idToDelete.toString()', _idToDelete.toString());
-      console.log('mine', ObjectIdToHexString(_idToDelete))
-      
-      
-      
-
-      
     })
     it('should delete one record', async function() {
-      const post = await request(app)
+      const delRes = await request(app)
         .delete(`/api/todo/${_idToDelete}`)
         .set('Accept', 'application/json')
         .send()
         .expect(200)
-      const deleteData = post.body.data
-      console.log('deleteData', deleteData)
-      expect(deleteData._id).to.equal(_idToDelete)
+      const delData = delRes.body.data
+      expect(delData._id).to.equal(_idToDelete.toHexString())
     })
   })
 })

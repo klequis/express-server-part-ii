@@ -21,3 +21,13 @@ export const isValidHexIdString = id => {
     return false
   }
 }
+
+// export const objectIdFromHexString = (hexString) => {
+//   try {
+//     new ObjectId(_idToDelete)
+//   }
+//   catch (e) {
+//     red(e)
+//     throw e
+//   }
+// }
