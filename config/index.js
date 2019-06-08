@@ -1,4 +1,4 @@
-import settings from './settings'
+import settings from './config.settings'
 
 const unknowEnvName = 'ERROR: config/indes.js: unknown environment name. Must be testLocal, testRemote, dev or prod'
 
