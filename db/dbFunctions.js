@@ -8,9 +8,8 @@ let client
 
 const connectDB = async () => {
   if (!client) {
-    client = await MongoClient.connect(config.mongoUrl, {
-      useNewUrlParser: true
-    })
+    console.log('mongoUri', config.mongoUri);
+    client = await MongoClient.connect(config.mongoUri, { useNewUrlParser: true })
   }
   return { db: client.db(config.dbName) }
 }
@@ -23,15 +22,34 @@ export const close = async () => {
 }
 
 const formatReturnSuccess = data => {
-  return { data: data, error: '' }
+  return { data: data, error: null }
 }
 
-const formatReturnError = error => {
+const formatReturnError = (functionName, error) => {
+  logError(functionName, error)
   return { data: [], error: error.message }
 }
 
 const logError = (functionName, error) => {
-  console.error(`Error: dbFunctions.${functionName}`, error.message)
+  if (config.env !== 'production') {
+    console.error(`Error: dbFunctions.${functionName}`, error.message)
+  }
+}
+
+/**
+ *
+ * @param {string} collection the name of a collection
+ * @param {Array} data  an array of documents, without _id, to be inserted
+ */
+export const insertMany = async (collection, data) => {
+  try {
+    const { db } = await connectDB()
+    const ret = await db.collection(collection).insertMany(data)
+    return formatReturnSuccess(ret.ops)
+  }
+  catch (e) {
+    return formatReturnError('insertMany', e)
+  }
 }
 
 /**
@@ -43,12 +61,12 @@ export const dropCollection = async collection => {
     const { db } = await connectDB()
     const ret = await db.collection(collection).drop()
     return formatReturnSuccess(ret)
-  } catch (e) {
-    if ((e.message = 'ns not found')) {
-      return true
+  }
+  catch (e) {
+    if (e.message = 'ns not found') {
+      return formatReturnSuccess(true)
     } else {
-      logError('dropCollection', e)
-      return formatReturnError(e)
+      return formatReturnError('insertMany', e)
     }
   }
 }
@@ -65,25 +83,7 @@ export const insertOne = async (collection, data) => {
     return formatReturnSuccess(ret.ops[0])
   }
   catch (e) {
-    console.error('ERROR: dbFunctions.insertOne', e)
-    return formatReturnError(e)
-  }
-}
-
-/**
- * 
- * @param {string} collection the name of a collection
- * @param {Array} data  an array of documents, without _id, to be inserted
- */
-export const insertMany = async (collection, data) => {
-  try {
-    const { db } = await connectDB()
-    const ret = await db.collection(collection).insertMany(data)
-    return formatReturnSuccess(ret.ops)
-  }
-  catch (e) {
-    console.warn('ERROR: dbFunctions.insertMany', e.message)
-    return formatReturnError(e)
+    return formatReturnError('insertOne', e)
   }
 }
 
@@ -100,8 +100,7 @@ export const find = async (collection, filter = {}, project = {}) => {
     return formatReturnSuccess(ret)
   }
   catch (e) {
-    logError('find', e)
-    return formatReturnError(e)
+    return formatReturnError('find', e)
   }
 }
 
@@ -118,8 +117,7 @@ export const findById = async (collection, id, project = {}) => {
     return formatReturnSuccess(ret)
   }
   catch (e) {
-    logError('findById', e)
-    return formatReturnError(e)
+    return formatReturnError('findById', e)
   }
 }
 
@@ -135,8 +133,7 @@ export const findOneAndDelete = async (collection, id) => {
     return formatReturnSuccess(ret.value)
   }
   catch (e) {
-    logError('findOneAndDelete', e)
-    return formatReturnError(e)
+    return formatReturnError('findOneAndDelete', e)
   }
 }
 
@@ -149,7 +146,6 @@ export const findOneAndDelete = async (collection, id) => {
  */
 export const findOneAndUpdate = async (collection, id, update, returnOriginal = false) => {
   try {
-
     // if the filter has the _id prop, remove it
     const cleanedUpdate = removeIdProp(update)
     const { db } = await connectDB()
@@ -161,8 +157,7 @@ export const findOneAndUpdate = async (collection, id, update, returnOriginal = 
     return formatReturnSuccess(ret.value)
   }
   catch (e) {
-    console.warn('ERROR: dbFunctions.findOneAndUpdate', e)
-    return formatReturnError(e)
+    return formatReturnError('findOneAndUpdate', e)
   }
 }
 

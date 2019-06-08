@@ -1,11 +1,11 @@
-import { ObjectID } from  'mongodb'
+import { ObjectID } from 'mongodb'
 import { omit } from 'ramda'
 
-// export const removeIdProp = (obj) => {
-//   return omit(['_id'], obj)
-// }
-
 const checkForHexString = new RegExp('^[0-9a-fA-F]{24}$')
+
+export const removeIdProp = obj => {
+  return omit(['_id'], obj)
+}
 
 export const isValidHexIdString = id => {
   let _id = ''
@@ -21,13 +21,3 @@ export const isValidHexIdString = id => {
     return false
   }
 }
-
-// export const objectIdFromHexString = (hexString) => {
-//   try {
-//     new ObjectId(_idToDelete)
-//   }
-//   catch (e) {
-//     red(e)
-//     throw e
-//   }
-// }
