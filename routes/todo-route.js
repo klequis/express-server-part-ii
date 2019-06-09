@@ -1,5 +1,7 @@
 import express from 'express'
 import { find, findById, insertOne, findOneAndDelete, findOneAndUpdate, objectIdFromHexString } from '../db'
+import { yellow } from 'logger'
+
 
 const router = express.Router()
 
@@ -37,8 +39,8 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
-  const id = req.params.id
   try {
+    const id = req.params.id
     const todos = await findById('todos', id)
     res.send(todos)
   } catch (e) {
@@ -56,6 +58,18 @@ router.delete('/:id', async (req, res) => {
     res.send(todo)
   } catch (e) {
     res.status(400).send()
+  }
+})
+
+router.patch('/:id', async (req, res) => {
+  
+  try {
+    const id = req.params.id
+    const u = await findOneAndUpdate('todos', id, req.body)
+    res.send(u)
+  }
+  catch (e) {
+    res.status(400).send(e)
   }
 })
 

@@ -12,8 +12,10 @@ import {
   // findOneAndDelete,
   // insertOne,
   insertMany,
-  // findOneAndUpdate
+  findOneAndUpdate
 } from 'db'
+
+import { yellow } from 'logger'
 
 const collectionName = 'todos'
 
@@ -97,6 +99,28 @@ describe('todo-route', function() {
         .expect(200)
       const delData = delRes.body.data
       expect(delData._id).to.equal(_idToDelete.toHexString())
+    })
+  })
+
+  describe('test PATCH /api/todo/:id', function() {
+    const newData = { title: 'changed title', completed: true }
+    let idToUpdate
+    before(async function() {
+      await dropCollection(collectionName)
+      const inserted = await insertMany(collectionName, fourTodos)
+      idToUpdate = inserted.data[1]._id.toString()
+    })
+    it('should return document document with updated title', async function() {
+      const updateRes = await request(app)
+        .patch(`/api/todo/${idToUpdate}`)
+        .set('Accept', 'application/json')
+        .send(newData)
+      yellow('updateRes')
+      const data = updateRes.body.data
+      yellow('data', data)
+      expect(data.title).to.equal(newData.title)
+      expect(data.completed).to.equal(true)
+      
     })
   })
 })
