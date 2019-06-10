@@ -1,9 +1,7 @@
 import { expect } from "chai";
 import request from 'supertest'
-import { objectIdToHexString } from 'db'
 import { fourTodos, oneTodo } from "./fixture"
 import app from 'server'
-import { ObjectId } from 'mongodb'
 import {
   close,
   dropCollection,
